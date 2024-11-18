@@ -3,17 +3,14 @@ name = "pretix-mvola"
 dynamic = ["version"]
 description = "Pay with mobile money supplier MVola (Madagascar)"
 readme = "README.rst"
-license = {text = "Apache"}
+license = { text = "Apache" }
 keywords = ["pretix"]
-authors = [
-    {name = "Mika Andrianarijaona", email = "mikaoelitiana@gmail.com"},
-]
+authors = [{ name = "Mika Andrianarijaona", email = "mikaoelitiana@gmail.com" }]
 maintainers = [
-    {name = "Mika Andrianarijaona", email = "mikaoelitiana@gmail.com"},
+  { name = "Mika Andrianarijaona", email = "mikaoelitiana@gmail.com" },
 ]
 
-dependencies = [
-]
+dependencies = ["mvola"]
 
 [project.entry-points."pretix.plugin"]
 pretix_mvola = "pretix_mvola:PretixPluginMeta"
@@ -22,10 +19,7 @@ pretix_mvola = "pretix_mvola:PretixPluginMeta"
 build = "pretix_plugin_build.build:CustomBuild"
 
 [build-system]
-requires = [
-    "setuptools",
-    "pretix-plugin-build",
-]
+requires = ["setuptools", "pretix-plugin-build"]
 
 [project.urls]
 homepage = "https://github.com/mikaoelitiana/pretix-mvola"
@@ -35,7 +29,7 @@ repository = "https://github.com/mikaoelitiana/pretix-mvola"
 include-package-data = true
 
 [tool.setuptools.dynamic]
-version = {attr = "pretix_mvola.__version__"}
+version = { attr = "pretix_mvola.__version__" }
 
 [tool.setuptools.packages.find]
 include = ["pretix*"]
