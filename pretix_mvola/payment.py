@@ -10,6 +10,8 @@ from pretix.base.payment import BasePaymentProvider, OrderPayment
 from pretix.base.settings import SettingsSandbox
 from pretix.multidomain.urlreverse import build_absolute_uri
 
+from pretix_mvola.models import MVolaOrderPayment
+
 # from pretix_orange_money_mdg.models import ReferencedOrangeMoneyObject
 
 
@@ -65,7 +67,6 @@ class MVola(BasePaymentProvider):
         return True
 
     def execute_payment(self, request: HttpRequest, payment: OrderPayment):
-        print(request.session["mvola_cart_total"])
         self.transaction = Transaction(
             token=request.session["mvola_token"],
             user_language="FR",
@@ -79,22 +80,21 @@ class MVola(BasePaymentProvider):
             credit=self.settings.receiver_number,
         )
 
-        # This will be used to find the payment on notify
         res = self.api.init_transaction(self.transaction)
 
         if res.success:
             print(res.response)
+            # This will be used to find the payment on notify
+            reference = MVolaOrderPayment(
+                payment=payment,
+                reference=res.response["serverCorrelationId"],
+                order=payment.order,
+            )
+            reference.save()
+
         else:
             print(f"Status_code [{res.status_code}] \n {res.error}")
 
-    # reference = ReferencedOrangeMoneyObject(
-    #     payment=payment,
-    #     reference=request.session["orange_money_mdg_notif_token"],
-    #     order=payment.order,
-    # )
-    # reference.save()
-    # return request.session.get("orange_money_mdg_payment_url") or ""
-    #
     @property
     def payment_form_fields(self):
         return OrderedDict(
