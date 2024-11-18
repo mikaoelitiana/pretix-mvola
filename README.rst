@@ -38,6 +38,11 @@ You can auto-fix some of these issues by running::
 
 To automatically check for these issues before you commit, you can run ``.install-hooks``.
 
+Migrations
+----------
+
+To create migrations, update `models.py` then run from the prexit virtual environment `python manage.py makemigrations pretix_mvola`
+
 
 License
 -------

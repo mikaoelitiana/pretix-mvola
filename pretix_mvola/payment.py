@@ -1,5 +1,4 @@
 from collections import OrderedDict
-
 from django import forms
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
