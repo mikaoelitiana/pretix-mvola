@@ -49,7 +49,7 @@ class MVola(BasePaymentProvider):
         if request.session["mvola_token"]:
             request.session["mvola_cart_total"] = cart["total"]
             request.session["mvola_callbackurl"] = build_absolute_uri(
-                request.event, "plugins:pretix_mvola:callback_url", kwargs={}
+                request.event, "plugins:pretix_mvola:callback", kwargs={}
             )
             form = self.payment_form(request)
             request.session["mvola_debit_account_number"] = form.cleaned_data[
