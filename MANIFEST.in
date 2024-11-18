@@ -1,0 +1,5 @@
+recursive-include pretix_mvola/static *
+recursive-include pretix_mvola/templates *
+recursive-include pretix_mvola/locale *
+include LICENSE
+exclude .gitlab-ci.yml

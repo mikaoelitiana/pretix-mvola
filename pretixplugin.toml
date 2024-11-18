@@ -1,0 +1,5 @@
+[plugin]
+package = "pretix-mvola"
+modules = [ "pretix_mvola" ]
+marketplace_name = "mvola"
+
