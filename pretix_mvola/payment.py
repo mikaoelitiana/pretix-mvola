@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from pprint import pprint
 from collections import OrderedDict
 from django import forms
 from django.http import HttpRequest
@@ -64,6 +67,7 @@ class MVola(BasePaymentProvider):
         return True
 
     def execute_payment(self, request: HttpRequest, payment: OrderPayment):
+        now = datetime.now()
         self.transaction = Transaction(
             token=request.session["mvola_token"],
             user_language="FR",
@@ -72,13 +76,19 @@ class MVola(BasePaymentProvider):
             amount=request.session["mvola_cart_total"],
             x_callback_url=request.session["mvola_callbackurl"],
             currency="Ar",
-            description_text=request,
+            description_text=f"ORDER_{payment.order.code}",
             debit=request.session["mvola_debit_account_number"],
             credit=self.settings.receiver_number,
+            request_date=now.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+            original_transaction_reference=payment.order.code,
+            requesting_organisation_transaction_reference=payment.order.code,
         )
+
+        pprint(self.transaction)
 
         res = self.api.init_transaction(self.transaction)
 
+        print(res)
         if res.success:
             print(res.response)
             # This will be used to find the payment on notify
