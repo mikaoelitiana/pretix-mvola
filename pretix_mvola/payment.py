@@ -11,8 +11,6 @@ from pretix.multidomain.urlreverse import build_absolute_uri
 
 from pretix_mvola.models import MVolaOrderPayment
 
-# from pretix_orange_money_mdg.models import ReferencedOrangeMoneyObject
-
 
 class MVola(BasePaymentProvider):
     identifier = "mvola"
