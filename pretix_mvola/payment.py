@@ -1,17 +1,14 @@
-import requests
-import time
 from collections import OrderedDict
+
+from django import forms
 from django.http import HttpRequest
-from django.utils.crypto import get_random_string
 from django.utils.translation import gettext as _
+from mvola.core import Mvola as MvolaSDK
+from mvola.tools import Transaction
 from pretix.base.models import Event
 from pretix.base.payment import BasePaymentProvider, OrderPayment
 from pretix.base.settings import SettingsSandbox
 from pretix.multidomain.urlreverse import build_absolute_uri
-
-from mvola.core import Mvola as MvolaSDK
-from mvola.tools import Transaction
-from requests.models import to_key_val_list
 
 # from pretix_orange_money_mdg.models import ReferencedOrangeMoneyObject
 
@@ -54,6 +51,10 @@ class MVola(BasePaymentProvider):
             request.session["mvola_callbackurl"] = build_absolute_uri(
                 request.event, "plugins:pretix_mvola:callback_url", kwargs={}
             )
+            form = self.payment_form(request)
+            request.session["mvola_debit_account_number"] = form.cleaned_data[
+                "debit_account_number"
+            ]
             return True
         return False
 
@@ -67,13 +68,13 @@ class MVola(BasePaymentProvider):
         self.transaction = Transaction(
             token=request.session["mvola_token"],
             user_language="FR",
-            user_account_identifier="0343500003",  # [UserAccountIdentifier] Requiered fields
+            user_account_identifier=request.session["mvola_debit_account_number"],
             partner_name="pretix",
             amount=request.session["mvola_cart_total"],
             x_callback_url=request.session["mvola_callbackurl"],
             currency="Ar",
             description_text=request,
-            debit="0343500003",
+            debit=request.session["mvola_debit_account_number"],
             credit=self.settings.receiver_number,
         )
 
@@ -92,3 +93,17 @@ class MVola(BasePaymentProvider):
     # )
     # reference.save()
     # return request.session.get("orange_money_mdg_payment_url") or ""
+    #
+    @property
+    def payment_form_fields(self):
+        return OrderedDict(
+            [
+                (
+                    "debit_account_number",
+                    forms.CharField(
+                        label=_("Your MVola account number"),
+                        required=True,
+                    ),
+                ),
+            ]
+        )
