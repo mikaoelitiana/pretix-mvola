@@ -46,12 +46,12 @@ class MVola(BasePaymentProvider):
             print(f"{self.event.currency} currency is not supported by MVola")
             return False
         self.get_access_token(request)
-        if request.session["mvola_token"]:
-            request.session["mvola_cart_total"] = cart["total"]
+        form = self.payment_form(request)
+        if form.is_valid() and request.session["mvola_token"]:
+            request.session["mvola_cart_total"] = int(cart["total"])
             request.session["mvola_callbackurl"] = build_absolute_uri(
                 request.event, "plugins:pretix_mvola:callback", kwargs={}
             )
-            form = self.payment_form(request)
             request.session["mvola_debit_account_number"] = form.cleaned_data[
                 "debit_account_number"
             ]
@@ -65,6 +65,7 @@ class MVola(BasePaymentProvider):
         return True
 
     def execute_payment(self, request: HttpRequest, payment: OrderPayment):
+        print(request.session["mvola_cart_total"])
         self.transaction = Transaction(
             token=request.session["mvola_token"],
             user_language="FR",
