@@ -32,7 +32,7 @@ def callback(request, *args, **kwargs):
             transaction = Transaction(
                 token=token,
                 user_language="FR",
-                user_account_identifier="0343500003",
+                user_account_identifier=order_payment.user_account_identifier,
                 partner_name="pretix",
                 server_correlation_id=order_payment.server_correlation_id,
             )

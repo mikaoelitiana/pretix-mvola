@@ -98,6 +98,7 @@ class MVola(BasePaymentProvider):
             reference = MVolaOrderPayment(
                 payment=payment,
                 server_correlation_id=res.response["serverCorrelationId"],
+                user_account_identifier=request.session["mvola_debit_account_number"],
                 reference=request.session["reference"],
                 order=payment.order,
             )
