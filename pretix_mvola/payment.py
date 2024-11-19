@@ -5,6 +5,7 @@ from collections import OrderedDict
 from django import forms
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+from django.utils.crypto import get_random_string
 from mvola.core import Mvola as MvolaSDK
 from mvola.tools import Transaction
 from pretix.base.models import Event
@@ -50,6 +51,7 @@ class MVola(BasePaymentProvider):
         self.get_access_token(request)
         form = self.payment_form(request)
         if form.is_valid() and request.session["mvola_token"]:
+            request.session["reference"] = f"{request.event.id}-{get_random_string(12)}"
             request.session["mvola_cart_total"] = int(cart["total"])
             request.session["mvola_callbackurl"] = build_absolute_uri(
                 request.event, "plugins:pretix_mvola:callback", kwargs={}
@@ -84,17 +86,14 @@ class MVola(BasePaymentProvider):
             requesting_organisation_transaction_reference=payment.order.code,
         )
 
-        pprint(self.transaction)
-
         res = self.api.init_transaction(self.transaction)
 
-        print(res)
         if res.success:
-            print(res.response)
             # This will be used to find the payment on notify
             reference = MVolaOrderPayment(
                 payment=payment,
-                reference=res.response["serverCorrelationId"],
+                server_correlation_id=res.response["serverCorrelationId"],
+                reference=request.session["reference"],
                 order=payment.order,
             )
             reference.save()
