@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from mvola.core import Mvola as MvolaSDK
 
 from pretix.base.settings import SettingsSandbox
@@ -16,7 +14,6 @@ from mvola.tools import Transaction
 @csrf_exempt
 @require_http_methods(["PUT"])
 def callback(request, *args, **kwargs):
-    pprint(request.headers)
     reference = request.GET.get("reference")
     order_payment = MVolaOrderPayment.objects.get(reference=reference)
     if order_payment.payment:
