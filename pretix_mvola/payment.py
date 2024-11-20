@@ -15,14 +15,25 @@ from pretix_mvola.models import MVolaOrderPayment
 
 
 class MVola(BasePaymentProvider):
-    identifier = "mvola"
-    verbose_name = _("MVola")
-    execute_payment_needs_user = True
-    test_mode_message = _(
-        """No real money will be used for testing.
+    @property
+    def identifier(self):
+        return "mvola"
+
+    @property
+    def verbose_name(self):
+        return _("MVola")
+
+    @property
+    def execute_payment_needs_user(self):
+        return True
+
+    @property
+    def test_mode_message(self):
+        return _(
+            """No real money will be used for testing.
          You can check https://www.mvola.mg/devportal
          for more details on test payments."""
-    )
+        )
 
     def __init__(self, event: Event):
         super().__init__(event)
