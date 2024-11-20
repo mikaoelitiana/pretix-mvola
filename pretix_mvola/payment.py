@@ -6,7 +6,6 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext as _
 from mvola.core import Mvola as MvolaSDK
 from mvola.tools import Transaction
-from pprint import pprint
 from pretix.base.models import Event
 from pretix.base.payment import BasePaymentProvider, OrderPayment
 from pretix.base.settings import SettingsSandbox
@@ -18,7 +17,6 @@ from pretix_mvola.models import MVolaOrderPayment
 class MVola(BasePaymentProvider):
     identifier = "mvola"
     verbose_name = _("MVola")
-    payment_form_fields = OrderedDict([])
     execute_payment_needs_user = True
     test_mode_message = _(
         """No real money will be used for testing.
