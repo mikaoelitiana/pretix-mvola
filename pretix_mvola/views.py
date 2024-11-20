@@ -1,14 +1,11 @@
-from mvola.core import Mvola as MvolaSDK
-
-from pretix.base.settings import SettingsSandbox
-
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from mvola.core import Mvola as MvolaSDK
+from mvola.tools import Transaction
+from pretix.base.settings import SettingsSandbox
 
 from pretix_mvola.models import MVolaOrderPayment
-
-from mvola.tools import Transaction
 
 
 @csrf_exempt

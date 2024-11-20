@@ -1,13 +1,12 @@
-from datetime import datetime
-
-from pprint import pprint
 from collections import OrderedDict
+from datetime import datetime
 from django import forms
 from django.http import HttpRequest
-from django.utils.translation import gettext as _
 from django.utils.crypto import get_random_string
+from django.utils.translation import gettext as _
 from mvola.core import Mvola as MvolaSDK
 from mvola.tools import Transaction
+from pprint import pprint
 from pretix.base.models import Event
 from pretix.base.payment import BasePaymentProvider, OrderPayment
 from pretix.base.settings import SettingsSandbox
